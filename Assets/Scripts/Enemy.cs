@@ -19,6 +19,7 @@ public class Enemy : MonoBehaviour
     public GameObject itemPower;
     public GameObject itemBoom;
     public GameObject player;              //Enemy는 Prefab이기 때문에 바로 Player(gameObejct)를 끌고 올수 없다->gameManager에서 넘겨받는 작업 필요
+    public GameManager gameManager;
     public ObjectManager objectManager;    //Enemy는 Prefab이기 때문에 바로 objectManager(script)를 끌고 올수 없다->gameManager에서 넘겨받는 작업 필요
 
     SpriteRenderer spriteRenderer;  //스프라이트를 바꿔주기 위해 사용
@@ -43,7 +44,7 @@ public class Enemy : MonoBehaviour
         switch(enemyName)
         {
             case "B":
-                health = 3000;
+                health = 100;
                 Invoke("Stop",2); // obj풀링때 1번, 호출때 1번 총 2번 Invoke호출-> 에러발생
                 break;
             case "L":
@@ -325,6 +326,12 @@ public class Enemy : MonoBehaviour
             gameObject.SetActive(false);
             // Quaternion.identity : 기본 회전값 = 0
             transform.rotation = Quaternion.identity;
+            gameManager.CallExplosion(transform.position, enemyName);
+
+            //#. Boss Kill
+            if(enemyName =="B")
+                gameManager.StageEnd();
+
         }
     }
  

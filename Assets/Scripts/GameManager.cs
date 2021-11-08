@@ -15,6 +15,12 @@ x)나 : 개발자에게 "날씨확인 기능츨 추가해주세요" 요청-> 개
 
 public class GameManager : MonoBehaviour
 {
+    public int stage;
+    public Animator stageAnim;
+    public Animator clearAnim;
+    public Animator fadeAnim;
+    public Transform playerPos;
+
     public string[] enemyObjs;
     public Transform[] spawnPoints;
 
@@ -39,7 +45,39 @@ public class GameManager : MonoBehaviour
     {
         spawnList = new List<Spawn>();
         enemyObjs = new string[]{ "EnemyS", "EnemyM", "EnemyL", "EnemyB"};
+        StageStart();
+    }
+
+    public void StageStart()
+    {
+        //#. Stage UI Load
+        stageAnim.SetTrigger("On");
+        stageAnim.GetComponent<Text>().text = "Stage " + stage + "\nStart";
+        clearAnim.GetComponent<Text>().text = "Stage " + stage + "\nClear!";
+        //#. Enemy Spawn File Read
         ReadSpawnFile();
+
+        //#. Fade In(밝아짐)
+        fadeAnim.SetTrigger("In");
+    }
+
+    public void StageEnd()
+    {
+        //#. Clear UI Load
+        clearAnim.SetTrigger("On");
+
+        //#. Fade out(어두워짐)
+        fadeAnim.SetTrigger("Out");
+
+        //#.Player Repos
+        player.transform.position = playerPos.position;
+
+        //#. Stage Increment
+        stage++;
+        if(stage > 2)
+            Invoke("GameOver", 6);
+        else 
+            Invoke("StageStart", 5);
     }
 
     void ReadSpawnFile()
@@ -50,7 +88,7 @@ public class GameManager : MonoBehaviour
         spawnEnd = false;
 
         //#2. 리스폰 파일 읽기
-        TextAsset  textFile =Resources.Load("Stage 0") as TextAsset;
+        TextAsset  textFile =Resources.Load("Stage "+ stage.ToString()) as TextAsset; //.Tostring() 안해줘도 됨 : 묵시적 형변환됨
         StringReader stringReader = new StringReader(textFile.text);
 
         //while문으로 텍스트 데이터 끝에 다다를 때까지 반복
@@ -127,6 +165,7 @@ public class GameManager : MonoBehaviour
         Rigidbody2D rigid = enemy.GetComponent<Rigidbody2D>();
         Enemy enemyLogic = enemy.GetComponent<Enemy>();
         enemyLogic.player = player; //enemy가 생성이 된 후이기 때문에 player를 넘겨주는 게 가능하다. *중요*
+        enemyLogic.gameManager = this;  //this : 클래스 자신을 일컫는 키워드
         enemyLogic.objectManager = objectManager;
     
 
@@ -194,6 +233,15 @@ public class GameManager : MonoBehaviour
         //#.UI boom Active
         for (int index = 0; index < boom; index++)
             boomImage[index].color = new Color(1, 1, 1, 1);  //Color(R,G,B,A);            
+    }
+
+    public void CallExplosion(Vector3 pos, string type)
+    {
+        GameObject explosion = objectManager.MakeObj("Explosion");
+        Explosion explosionLogic = explosion.GetComponent<Explosion>();
+
+        explosion.transform.position = pos;
+        explosionLogic.StartExplosion(type);
     }
 
     public void GameOver()

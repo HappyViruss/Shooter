@@ -7,7 +7,7 @@ public class Bullet : MonoBehaviour
     public int dmg;
     public bool isRotate;
 
-    void Update()
+    void Update()   
     {
         if(isRotate)
             transform.Rotate(Vector3.forward*10);
@@ -22,4 +22,3 @@ public class Bullet : MonoBehaviour
         }
     }
 }
- 

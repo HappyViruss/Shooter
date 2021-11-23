@@ -7,16 +7,16 @@ public class Player : MonoBehaviour
     public bool isTouchTop;
     public bool isTouchBottom;
     public bool isTouchRight;
-    public bool isTouchLeft;
+    public bool isTouchLeft;      
 
     public int life;
-    public int score;
+    public int score;   
     public float speed;
     public int power;
     public int maxPower;
     public int boom;
-    public int maxBoom;
-    public float maxShotDelay;  //실제 딜레이
+    public int maxBoom;   
+    public float maxShotDelay;  //실제 딜레이   
     public float curShotDelay;  //한발 쏘고 충전되기 위한 딜레이
 
     public GameObject bulletObjA;   //프리팹
@@ -25,6 +25,7 @@ public class Player : MonoBehaviour
     
     public GameManager gameManager;     //씬에 항상 존재하는 GameObject가 가지고 있는 Script Component
     public ObjectManager objectManager;
+
     public bool isHit;
     public bool isBoomTime;
 
@@ -85,15 +86,7 @@ public class Player : MonoBehaviour
         Fire();
         Boom();
         Reload();
-    }
 
-    public void LButtonDown()
-    {
-        transform.Translate(-1,0,0);
-    }
-    public void RButtonDown()
-    {
-        transform.Translate(1,0,0);
     }
 
     public void JoyPanel(int type)
@@ -130,8 +123,6 @@ public class Player : MonoBehaviour
         if(joyControl[6]) { h= -1; v = -1;}
         if(joyControl[7]) { h= 0; v = -1;}
         if(joyControl[8]) { h= 1; v = -1;}
-
-
 
         if((isTouchRight&&h==1)||(isTouchLeft&&h==-1)|| !isControl)
         h=0;
@@ -181,7 +172,6 @@ public class Player : MonoBehaviour
                 //GameObject bullet = Instantiate(bulletObjA, transform.position, transform.rotation);
                 GameObject bullet = objectManager.MakeObj("BulletPlayerA");
                 bullet.transform.position = transform.position;
-
 
                 Rigidbody2D rigid = bullet.GetComponent<Rigidbody2D>();
                 rigid.AddForce(Vector2.up*10, ForceMode2D.Impulse);
@@ -309,17 +299,17 @@ public class Player : MonoBehaviour
             switch(other.gameObject.name)
             {
                 case "Top":
-                isTouchTop = true;
-                break;
+                    isTouchTop = true;
+                    break;
                 case "Bottom":
-                isTouchBottom = true;
-                break;
+                    isTouchBottom = true;
+                    break;
                 case "Right": 
-                isTouchRight = true;
-                break;
+                    isTouchRight = true;
+                    break;
                 case "Left":
-                isTouchLeft = true;
-                break;
+                    isTouchLeft = true;
+                    break;
             }
         }
         else if(other.gameObject.tag =="Enemy" || other.gameObject.tag == "EnemyBullet")
